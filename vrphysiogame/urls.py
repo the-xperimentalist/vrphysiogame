@@ -24,4 +24,5 @@ urlpatterns = [
     # path('users/', include('camdetection.urls'))
     url(r'^users/', include('camdetection.urls')),
     url(r'^pose_data/(?P<user_db_id>[0-9]+)/$', pose_data, name='pose_data'),
+    url(r'^api/', include('api.urls')),
 ]
