@@ -15,7 +15,10 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from camdetection.views import *
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('', index, name='camdetection'),
+    path('pose_data/', pose_data, name='pose_data')
 ]
