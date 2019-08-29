@@ -29,11 +29,11 @@ function getCookie(c_name)
     }
     return "";
  }
-console.log("Loaded")
 
 $.ajaxSetup({
         headers: { "X-CSRFToken": getCookie("csrftoken") }
     });
+
 
 function setup() {
   createCanvas(640, 480);
@@ -45,7 +45,7 @@ function setup() {
   poseNet.on('pose', function(results) {
     curTs = (new Date).getTime()
     poses = results;
-    printInConsole(poses, curTs);
+    postBodyData(poses, curTs);
     // setInterval(function() {console.log(poses)}, 10000)
   });
   // setInterval(printPoseResult(), 10000)
@@ -53,21 +53,27 @@ function setup() {
 }
 
 // while (true) {
-//   printInConsole({'as':'as'})
+//   postBodyData({'as':'as'})
 // }
 
-function printInConsole (poses, curTs) {
+cur_url = window.location.href
+console.log(cur_url)
+cur_url_spl = cur_url.split("/")
+console.log(cur_url_spl)
+post_url = "/pose_data/"+cur_url_spl[cur_url_spl.length-2]+"/"
+console.log(post_url)
+function postBodyData (poses, curTs) {
+
   if ((curTs - scriptTsStart ) > 1000) {
-    console.log("Entered")
+    console.log(poses)
     scriptTsStart = curTs
-    post_data = {'a':'a'}
+    post_data = {'poses':poses}
     $.ajax({
       type: "POST",
-      url: "/pose_data/",
+      url: post_url,
       data: post_data,
       dataType: "json",
       success: function (response) {
-        console.log(response.status)
         console.log("Success")
       }
     })

@@ -5,17 +5,39 @@ from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
 # from camdetection.forms import SignupForm
+from camdetection.models import UserDatabase
+from pprint import pprint
 
 
 @login_required
-def index(request):
+def index(request, *args, **kwargs):
+    return render(request, 'pose_detect.html', {})
+
+@login_required
+def cam_detect(request, user_db_id):
+    user_db = UserDatabase.objects.get(id=user_db_id)
+    print(user_db)
     return render(request, 'base.html', {})
 
+@login_required
+def enter_cam(request):
+    print("Entered enter_cam")
+    if request.method == 'POST':
+        print("In true")
+        rPOST = dict(request.POST)
+        phone_reg_name = rPOST['phone_reg_name'][0]
+        user_db = UserDatabase.objects.get(phone_reg_name=phone_reg_name)
+        return redirect(f'/users/cam_detect/{user_db.id}')
+
 @csrf_protect
-def pose_data(request):
+def pose_data(request, user_db_id):
+    user_db = UserDatabase.objects.get(id=user_db_id)
     try:
         if request.method == "POST":
             given_data = dict(request.POST)
+            print("\n\n")
+            pprint(given_data)
+            print("\n\n")
         return HttpResponse(status=204)
     except Exception:
         logging.exception("Got exception")
@@ -33,7 +55,7 @@ def login_view(request):
             user = authenticate(username=username, password=password)
             if user:
                 login(request, user)
-                return redirect('/')
+                return redirect('/users/pose_detect/')
     else:
         loginform = AuthenticationForm()
     return render(request, 'login.html', {'loginform': loginform})
@@ -54,7 +76,7 @@ def signup(request):
             raw_password = form.cleaned_data['password1']
             user = authenticate(username=username, password=raw_password)
             login(request, user)
-            return redirect('/pose_detect/')
+            return redirect('/users/pose_detect/')
     else:
         form = UserCreationForm()
     return render(request, 'signup.html', {'form': form})
