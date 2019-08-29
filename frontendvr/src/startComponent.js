@@ -7,8 +7,8 @@ class StartComponent extends Component {
     password: '',
   }
   handleChange = (e) => {
-    nm = e.target.name
-    val = e.target.value
+    let nm = e.target.name
+    let val = e.target.value
     this.setState(prevState => {
       const newState = prevState
       newState[nm] = val;
