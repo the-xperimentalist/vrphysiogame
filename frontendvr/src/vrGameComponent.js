@@ -1,6 +1,7 @@
 import 'aframe';
 import React from 'react';
 import {Box, Icosahedron, Cylinder, Plane, Sky, Text, Scene} from 'react-aframe-ar'
+import axios from 'axios';
 
 class VrGameComponent extends React.Component {
   state = {
@@ -26,17 +27,46 @@ class VrGameComponent extends React.Component {
       width: 20,
       ht: 40,
       color: '#7BC8A4'
-    }
+    },
+    loading: true
+  }
+  get_user_pos = () => {
+    const user_db_id = this.props.match.params.user_db_id
+    console.log(user_db_id)
+    let get_url = 'http://localhost:8000/api/getdata/'+user_db_id+'/'
+    axios.get(get_url)
+      .then(res => {
+        console.log(res.data)
+      })
+      .catch(err => {
+        console.log(err)
+      })
   }
   componentDidMount () {
-    var tag = document.createElement('script');
-    tag.src = 'https://unpkg.com/aframe-environment-component@1.1.0/dist/aframe-environment-component.min.js';
-    var body = document.getElementsByTagName('body')[0];
-    body.appendChild(tag);
+    // var tag = document.createElement('script');
+    // tag.src = 'https://unpkg.com/aframe-environment-component@1.1.0/dist/aframe-environment-component.min.js';
+    // var body = document.getElementsByTagName('body')[0];
+    // body.appendChild(tag);
+    const user_db_id = this.props.match.params.user_db_id
+    console.log(user_db_id)
+    let get_url = 'http://localhost:8000/api/getdata/'+user_db_id+'/'
+    axios.get(get_url)
+      .then(res => {
+        console.log(res.data)
+        this.setState({loading: false})
+      })
+      .catch(err => {
+        console.log(err)
+        this.setState({loading: true})
+      })
+    setInterval(this.get_user_pos(), 10000)
   }
   render () {
-    const {box, sphere, cylinder, plane} = this.state
-    return (
+    const {box, sphere, cylinder, plane, loading} = this.state
+    if (loading)
+      return (<div>Game loading...</div>)
+    else
+      return (
         <Scene>
           <Box position="-10 0.5 -3" rotation="0 0 0" color="#4CC3D9" depth="48" height="2" width="1" shadow></Box>
           <Box position="10 0.5 -3" rotation="0 0 0" color="#4CC3D9" depth="48" height="2" width="1" shadow></Box>
