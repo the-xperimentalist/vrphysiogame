@@ -7,6 +7,7 @@ from django.contrib.auth.decorators import login_required
 # from camdetection.forms import SignupForm
 from camdetection.models import UserDatabase
 from pprint import pprint
+import json
 
 
 @login_required
@@ -39,9 +40,25 @@ def pose_data(request, user_db_id):
     try:
         if request.method == "POST":
             given_data = dict(request.POST)
-            print("\n\n")
-            pprint(given_data)
-            print("\n\n")
+            reqd_dict = {'leftShoulder': {},
+                         'rightShoulder': {},
+                         'leftEye': {},
+                         'rightEye': {}}
+            reqd_dict['leftShoulder']['score'] = given_data['poses[0][pose][keypoints][5][score]'][0]
+            reqd_dict['leftShoulder']['x'] = given_data['poses[0][pose][keypoints][5][position][x]'][0]
+            reqd_dict['leftShoulder']['y'] = given_data['poses[0][pose][keypoints][5][position][y]'][0]
+            reqd_dict['rightShoulder']['score'] = given_data['poses[0][pose][keypoints][6][score]'][0]
+            reqd_dict['rightShoulder']['x'] = given_data['poses[0][pose][keypoints][6][position][x]'][0]
+            reqd_dict['rightShoulder']['y'] = given_data['poses[0][pose][keypoints][6][position][y]'][0]
+            reqd_dict['leftEye']['score'] = given_data['poses[0][pose][keypoints][1][score]'][0]
+            reqd_dict['leftEye']['x'] = given_data['poses[0][pose][keypoints][1][position][x]'][0]
+            reqd_dict['leftEye']['y'] = given_data['poses[0][pose][keypoints][1][position][y]'][0]
+            reqd_dict['rightEye']['score'] = given_data['poses[0][pose][keypoints][2][score]'][0]
+            reqd_dict['rightEye']['x'] = given_data['poses[0][pose][keypoints][2][position][x]'][0]
+            reqd_dict['rightEye']['y'] = given_data['poses[0][pose][keypoints][2][position][y]'][0]
+            json_text = json.dumps(reqd_dict)
+            user_db.json_data = json_text
+            user_db.save()
         return HttpResponse(status=204)
     except Exception:
         logging.exception("Got exception")
