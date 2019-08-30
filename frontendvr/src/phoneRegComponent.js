@@ -9,7 +9,7 @@ class PhoneRegComponent extends Component {
   }
   componentDidMount () {
     let user_id = this.props.match.params.user_id
-    let get_url = 'https://localhost:8000/api/users/'+user_id.toString()+'/'
+    let get_url = 'http://localhost:8000/api/users/'+user_id.toString()+'/'
     axios.get(get_url)
       .then(res => {
         let ia = false
@@ -35,10 +35,11 @@ class PhoneRegComponent extends Component {
     })
   }
   handleSubmit = (e) => {
+    e.preventDefault()
     let user_id = this.props.match.params.user_id
     let post_data = this.state
     post_data['user_id'] = user_id
-    axios.post('https://localhost:8000/api/userdb/', post_data)
+    axios.post('http://localhost:8000/api/userdb/', post_data)
       .then(res => {
         console.log("Success")
         window.location.href = "http://localhost:3000/vrgame/"+res.data.id.toString()

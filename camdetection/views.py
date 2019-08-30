@@ -10,14 +10,14 @@ from pprint import pprint
 
 
 @login_required
-def index(request, *args, **kwargs):
-    return render(request, 'pose_detect.html', {})
+def phone_reg_detect(request, *args, **kwargs):
+    return render(request, 'phone_reg_detect.html', {})
 
 @login_required
 def cam_detect(request, user_db_id):
     user_db = UserDatabase.objects.get(id=user_db_id)
     print(user_db)
-    return render(request, 'base.html', {})
+    return render(request, 'cam_detect.html', {})
 
 @login_required
 def enter_cam(request):
@@ -25,9 +25,13 @@ def enter_cam(request):
     if request.method == 'POST':
         print("In true")
         rPOST = dict(request.POST)
+        print(rPOST)
         phone_reg_name = rPOST['phone_reg_name'][0]
+        print(phone_reg_name)
         user_db = UserDatabase.objects.get(phone_reg_name=phone_reg_name)
-        return redirect(f'/users/cam_detect/{user_db.id}')
+        print(user_db)
+        # return redirect(f'/cam_detect/{user_db.id}/')
+        return HttpResponse(str(user_db.id))
 
 @csrf_protect
 def pose_data(request, user_db_id):
@@ -55,7 +59,7 @@ def login_view(request):
             user = authenticate(username=username, password=password)
             if user:
                 login(request, user)
-                return redirect('/users/pose_detect/')
+                return redirect('/phone_reg_detect/')
     else:
         loginform = AuthenticationForm()
     return render(request, 'login.html', {'loginform': loginform})
@@ -76,7 +80,7 @@ def signup(request):
             raw_password = form.cleaned_data['password1']
             user = authenticate(username=username, password=raw_password)
             login(request, user)
-            return redirect('/users/pose_detect/')
+            return redirect('/phone_reg_detect/')
     else:
         form = UserCreationForm()
     return render(request, 'signup.html', {'form': form})

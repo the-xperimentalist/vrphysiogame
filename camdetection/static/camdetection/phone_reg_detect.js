@@ -26,11 +26,13 @@ function submitPhoneReg () {
   post_data = {'phone_reg_name': nm}
   $.ajax({
     type: 'POST',
-    url: '/users/enter_cam/',
+    url: '/enter_cam/',
     data: post_data,
-    dataType: 'json',
     success: function (response) {
-      console.log('success')
+      window.location.href = 'http://localhost:8000/cam_detect/'+response+'/'
+    },
+    error: function (err) {
+      console.log(err)
     }
   })
 }

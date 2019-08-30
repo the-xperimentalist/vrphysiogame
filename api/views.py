@@ -9,7 +9,7 @@ class LoginView(APIView):
     def post(self, request, *args, **kwargs):
         username = request.data['username']
         password = request.data['password']
-        user = authenticate(username, password)
+        user = authenticate(username=username, password=password)
         return Response({'id':user.id, 'username': username})
 
 class UserDetail(APIView):

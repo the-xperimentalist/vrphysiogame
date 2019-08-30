@@ -18,11 +18,6 @@ from django.conf.urls import url, include
 from camdetection.views import *
 
 urlpatterns = [
-    # path('admin/', admin.site.urls),
-    # path('', index, name='camdetection'),
-    # path('pose_data/()/', pose_data, name='pose_data'),
-    # path('users/', include('camdetection.urls'))
-    url(r'^users/', include('camdetection.urls')),
-    url(r'^pose_data/(?P<user_db_id>[0-9]+)/$', pose_data, name='pose_data'),
+    url(r'', include('camdetection.urls')),
     url(r'^api/', include('api.urls')),
 ]
